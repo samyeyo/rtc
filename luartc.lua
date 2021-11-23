@@ -70,9 +70,16 @@ end
 target = sys.File(arg[0]).path.."/"..target
 output = output or file.filename:gsub("(%w+)$", "exe")
 local fs = sys.tempfile("luartc_")
+local fname = sys.tempfile("luartc_main_")
+
+fname:open("write")
+fname:write(file.filename)
+fname:close()
 
 local z = Zip(fs.fullpath, "write")
-z:write(file, "__main__.lua")
+z:write(file)
+z:write(fname, "__mainLuaRTStartup__")
+
 if directory ~= nil then
 	z:write(directory)
 end
