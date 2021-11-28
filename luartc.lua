@@ -72,8 +72,8 @@ output = output or file.filename:gsub("(%w+)$", "exe")
 local fs = sys.tempfile("luartc_")
 local fname = sys.tempfile("luartc_main_")
 
-fname:open("write")
-fname:write('return require "'..file.filename:gsub(file.extension, "")..'"')
+fname:open("write", "binary")
+fname:write('require "'..file.filename:gsub(file.extension, "")..'"')
 fname:close()
 
 local z = Zip(fs.fullpath, "write")
