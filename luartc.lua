@@ -73,7 +73,7 @@ local fs = sys.tempfile("luartc_")
 local fname = sys.tempfile("luartc_main_")
 
 fname:open("write")
-fname:write('require "'..file.filename:gsub(file.extension, "")..'"')
+fname:write('return require "'..file.filename:gsub(file.extension, "")..'"')
 fname:close()
 
 local z = Zip(fs.fullpath, "write")
