@@ -73,12 +73,12 @@ local fs = sys.tempfile("luartc_")
 local fname = sys.tempfile("luartc_main_")
 
 fname:open("write")
-fname:write(file.filename)
+fname:write('require "'..file.filename:gsub(file.extension, "")..'"')
 fname:close()
 
 local z = Zip(fs.fullpath, "write")
 z:write(file)
-z:write(fname, "__mainLuaRTStartup__")
+z:write(fname, "__mainLuaRTStartup__.lua")
 
 if directory ~= nil then
 	z:write(directory)
