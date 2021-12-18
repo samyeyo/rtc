@@ -67,6 +67,10 @@ if file == nil then
 	error("no input file")
 end
 
+if file.extension == ".wlua" and target == "luart.exe" then
+	target = "wluart.exe"
+end
+
 target = sys.File(arg[0]).path.."/"..target
 output = output or file.filename:gsub("(%w+)$", "exe")
 local fs = sys.tempfile("luartc_")
@@ -88,3 +92,4 @@ z:close()
 sys.File(output):remove()
 sys.File(target):copy(output)
 sys.cmd('copy /b '..output..'+"'..fs.fullpath..'" '..output..' >nul')
+print(output)
