@@ -10,9 +10,9 @@ Build standalone Windows executables from your Lua scripts.
 
 [Features](#features) |
 [Installation](#installation) |
-[Using LuaRTc](#using) |
-[Links](#links) 
-
+[Usage](#usage) |
+[Links](#links) |
+[License](#license)
 </div>
 
 ## Features
@@ -37,7 +37,7 @@ It does not require a C compiler since it can compile itself.
 Open a LuaRT console prompt, and type "**luart luartc.lua luartc.lua**"
 It should produce a "**luartc.exe**" executable. Move the luartc.exe file to the **\bin** directory in the LuaRT installation path (where **luart.exe** and **wluart.exe** are)
 
-## Using LuaRTc
+## Usage
 
 #### Command line options
   
@@ -77,4 +77,15 @@ To require a LuaRT script file in the embedded files, use **require** with the n
 local english = require "english"
 print(english.hello)
 ```
- 
+  
+## Links
+  
+- [LuaRT Homepage](http://www.luart.org/)
+- [LuaRT Community](http://community.luart.org/)
+- [LuaRT Documentation](http://www.luart.org/doc)
+
+## License
+  
+LuaRT is copyright (c) 2022 Samir Tine.
+LuaRT is open source, released under the MIT License.
+See full copyright notice in the LICENSE.txt file.
