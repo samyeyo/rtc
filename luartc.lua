@@ -1,17 +1,23 @@
--- | LuaRT - A Windows programming framework for Lua
+-- | RTc - Lua script to executable compiler
 -- | Luart.org, Copyright (c) Tine Samir 2022.
 -- | See Copyright Notice in LICENSE.TXT
 -- |---------------------------------------------------
 -- | LuaRTc.lua | LuaRT executable compiler
 
-Zip = require "zip"
+local Zip = require "zip"
+local console = require "console"
 
-if #arg == 0 then
-	print([[LuaRT 0.9.4 - LuaRT script to executable compiler.
+local idx = (package.loaded["embed"] == nil) and 1 or 0
+ 
+if #arg == idx then
+	console.writecolor("brightwhite", "Lua")
+	console.writecolor('yellow', "RT")
+	print([[ 0.9.5 - Lua script to executable compiler.
 Copyright (c) 2022, Samir Tine.
 	
-usage:	luartc.exe [-c][-w][-o output] [directory] main.lua
+usage:	rtc.exe [-s][-c][-w][-o output] [directory] main.lua
 	
+	-s		create static executable (without LUA54.DLL dependency)
 	-c		create executable for console (default)
 	-w		create executable for Windows desktop
 	-o output	set executable name to 'output'
@@ -26,7 +32,7 @@ local file					-- main Lua File to be executed when running the executable
 local target = "luart.exe"	-- target interpreter for console or window subsystem
 
 ------------------------------------| Parse commande line
-local setoutput = false
+local setoutput, static = false, false
 for i, option in ipairs(arg) do
 	if setoutput then
 		output = option
@@ -41,19 +47,23 @@ for i, option in ipairs(arg) do
 				if option == "-o" then
 					setoutput = true
 				else
-					if option:sub(1,1) == "-" then 
-						print("invalid option "..option)
-						sys.exit(-1)
-					else 
-						if directory == nil and not sys.File(option).exists then
-							directory = sys.Directory(option)
-							if not directory.exists then
-								error("cannot find file "..option)
-							end
+					if option == "-s" then
+						static = true
+					else
+						if option:sub(1,1) == "-" then 
+							print("invalid option "..option)
+							sys.exit(-1)
 						else 
-							file = sys.File(option)
-							if not file.exists then
-								error("cannot find file "..option)
+							if directory == nil and not sys.File(option).exists then
+								directory = sys.Directory(option)
+								if not directory.exists then
+									error("cannot find file "..option)
+								end
+							else 
+								file = sys.File(option)
+								if not file.exists then
+									error("cannot find file "..option)
+								end
 							end
 						end
 					end
@@ -69,6 +79,14 @@ end
 
 if file.extension == ".wlua" and target == "luart.exe" then
 	target = "wluart.exe"
+end
+
+if static then
+	if target == "luart.exe" then
+		target = "luart-static.exe"
+	else
+		target = "wluart-static.exe"
+	end
 end
 
 target = sys.File(arg[0]).path.."/"..target
@@ -88,8 +106,11 @@ if directory ~= nil then
 	z:write(directory)
 end
 z:close()
+print("output = "..output)
+print("target = "..target)
+print("zip = "..fs.fullpath)
 
 sys.File(output):remove()
 sys.File(target):copy(output)
-sys.cmd('copy /b '..output..'+"'..fs.fullpath..'" '..output..' >nul')
+sys.cmd('copy /b '..output..'+"'..fs.fullpath..'" '..output)
 print(output)
