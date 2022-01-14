@@ -1,12 +1,12 @@
 <div align="center">
 
-# RTc
+# rtc
 
 [![Made with LuaRT](https://badgen.net/badge/Made%20with/LuaRT/yellow)](https://www.luart.org/)
 ![Windows](https://badgen.net/badge/Windows/Vista%20and%20later/blue?icon=windows)
 [![RTc License](https://badgen.net/badge/License/MIT/green)](#)
 
-Build standalone Windows executables from your Lua scripts.
+Build standalone Windows executables from your LuaRT scripts.
 
 [Features](#features) |
 [Installation](#installation) |
@@ -17,22 +17,22 @@ Build standalone Windows executables from your Lua scripts.
 
 ## Features
   
-- Build native executable (.exe) from your Lua scripts
+- Build native executable (.exe) from your LuaRT scripts
 - Windows desktop or console applications
-- Static (without LUA54.DLL dependency)
-- Dynamic building (with LUA54.DLL dependency)
+- Static executables (without LUA54.DLL dependency)
+- Dynamic executables (with LUA54.DLL dependency)
 - Embed any files with your executables
-- Access embedded files seamlessly from your Lua script
+- Access embedded files seamlessly from your LuaRT scripts
 - Deploy your applications easily without the need to install LuaRT
 
 ## Installation
 
 #### Requirements
   
-RTc is written entirely in LuaRT and relies on a valid LuaRT installation to be built.
+rtc is written entirely in LuaRT and relies on a valid LuaRT installation to be built.
 It does not require a C compiler since it can compile itself.
 
-#### Build LuaRTc
+#### Build rtc
   
 Open a LuaRT console prompt, and type "**luart rtc.lua rtc.lua**"
 It should produce a "**rtc.exe**" executable. Move the rtc.exe file to the **\bin** directory in the LuaRT installation path (where **luart.exe** and **wluart.exe** are)
@@ -55,19 +55,19 @@ The specified optional directory will then be embedded within the executable wit
 
 #### Accessing embedded files from your LuaRT application
   
-To access embedded files from your LuaRT application, just **require** for the "**embed**" module. It will return a Zip value, already open for read access, that contains the directory structure provided during compilation with RTc :
+To access embedded files from your LuaRT application, just **require** for the "**embed**" module. It will return a Zip object, already open for read access, that contains the directory content provided during compilation with rtc :
 
 ```lua
--- require the "bundle" module (returns a Zip value)
-local bundle = require "bundle"
+-- require the "embed" module (returns a Zip object)
+local embed = require "embed"
 
 -- extract all the embedded content
-bundle:extractall("c:/installdir/")
+embed:extractall("c:/installdir/")
 ```
 
 If no embedded content exists, **require "embed"** will return a **nil** value.
   
-#### Requiring LuaRT modules from embedded files
+#### Requiring Lua modules from embedded files
 
 To require a LuaRT script file in the embedded files, use **require** with the name of the module. Please note that it works only for Lua modules, not binary modules (DLL) that still needs to be extracted before.
 
@@ -85,6 +85,6 @@ print(english.hello)
 
 ## License
   
-LuaRT and RTc are copyright (c) 2022 Samir Tine.
-LuaRT and RTc are open source, released under the MIT License.
+LuaRT and rtc are copyright (c) 2022 Samir Tine.
+LuaRT and rtc are open source, released under the MIT License.
 See full copyright notice in the LICENSE.txt file.
