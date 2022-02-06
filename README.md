@@ -3,7 +3,7 @@
 # rtc
 
 [![Made with LuaRT](https://badgen.net/badge/Made%20with/LuaRT/yellow)](https://www.luart.org/)
-![Windows](https://badgen.net/badge/Windows/Vista%20and%20later/blue?icon=windows)
+![Windows Vista+](https://badgen.net/badge/Windows/Vista%20and%20later/blue?icon=windows)
 [![RTc License](https://badgen.net/badge/License/MIT/green)](#)
 
 Build standalone Windows executables from your LuaRT scripts.
@@ -35,7 +35,7 @@ It does not require a C compiler since it can compile itself.
 #### Build rtc
   
 Open a LuaRT console prompt, and type "**luart rtc.lua rtc.lua**"
-It should produce a "**rtc.exe**" executable. Move the rtc.exe file to the **\bin** directory in the LuaRT installation path (where **luart.exe** and **wluart.exe** are)
+It should produce a "**rtc.exe**" executable. Move the rtc.exe file to the "**\\bin**" directory in the LuaRT installation path (where **luart.exe** and **wluart.exe** are)
 
 ## Usage
 
@@ -69,10 +69,10 @@ If no embedded content exists, **require "embed"** will return a **nil** value.
   
 #### Requiring Lua modules from embedded files
 
-To require a LuaRT script file in the embedded files, use **require** with the name of the module. Please note that it works only for Lua modules, not binary modules (DLL) that still needs to be extracted before.
+To require a LuaRT script file in the embedded files, use **require** with the name of the module. Please note that it works only for Lua modules, not binary modules (DLL) that still needs to be extracted before use.
 
 ```lua
--- require for the english.lua module, that must have been previously embedded with LuaRTc 
+-- require for the english.lua module, that must have been previously embedded with rtc 
 local english = require "english"
 print(english.hello)
 ```
@@ -86,5 +86,5 @@ print(english.hello)
 ## License
   
 LuaRT and rtc are copyright (c) 2022 Samir Tine.
-LuaRT and rtc are open source, released under the MIT License.
-See full copyright notice in the LICENSE.txt file.
+rtc is open source, released under the MIT License.
+See full copyright notice in the LICENSE file.
