@@ -34,7 +34,7 @@ It does not require a C compiler since it can compile itself.
 
 #### Build rtc
   
-Open a LuaRT console prompt, and type "**luart rtc.lua rtc.lua**"
+Open a Windows console prompt, and type "**luart rtc.lua rtc.lua**"
 It should produce a "**rtc.exe**" executable. Move the rtc.exe file to the "**\\bin**" directory in the LuaRT installation path (where **luart.exe** and **wluart.exe** are)
 
 ## Usage
@@ -55,7 +55,7 @@ The specified optional directory will then be embedded within the executable wit
 
 #### Accessing embedded files from your LuaRT application
   
-To access embedded files from your LuaRT application, just **require** for the "**embed**" module. It will return a Zip object, already open for read access, that contains the directory content provided during compilation with rtc :
+To access embedded files from your LuaRT application, just **require** for the "**embed**" module. It will return a Zip value, already open for read access, that contains the directory content provided on the command line during compilation with rtc :
 
 ```lua
 -- require the "embed" module (returns a Zip object)
@@ -65,7 +65,7 @@ local embed = require "embed"
 embed:extractall("c:/installdir/")
 ```
 
-If no embedded content exists, **require "embed"** will return a **nil** value.
+If no embedded content exists, **require "embed"** will return a **nil** value. You can check that the current script is compiled using the **package.preload["embed"]** table.
   
 #### Requiring Lua modules from embedded files
 

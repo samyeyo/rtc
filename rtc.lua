@@ -7,20 +7,13 @@
 local zip = require "zip"
 local console = require "console"
 
-local errfunc = error
-
-local function error(msg)
-	console.color = "lightred"
-	errfunc(msg)
-end
-
 local idx = (package.loaded["embed"] == nil) and 1 or 0
  
 if #arg == idx then
-	console.writecolor("brightwhite", "rtc 0.5")
-	console.write(" - Lua script to Windows executable compiler\nPowered by Lua")
+	console.writecolor("brightwhite", "Lua")
 	console.writecolor('yellow', "RT")
-	print([[ - Copyright (c) 2022, Samir Tine.
+	print([[ 0.9.6 - Lua script to executable compiler.
+Copyright (c) 2022, Samir Tine.
 	
 usage:	rtc.exe [-s][-c][-w][-o output] [directory] main.lua
 	
@@ -36,7 +29,7 @@ end
 local output				-- output executable filename
 local directory				-- Directory to be embedded in the executable
 local file					-- main Lua File to be executed when running the executable
-local target = "luart.exe"	-- target interpreter for console subsystem
+local target = "luart.exe"	-- target interpreter for console or window subsystem
 
 ------------------------------------| Parse commande line
 local setoutput, static, forceconsole = false, false, false
@@ -59,17 +52,18 @@ for i, option in ipairs(arg) do
 						static = true
 					else
 						if option:sub(1,1) == "-" then 
-							error("invalid option "..option)
+							print("invalid option "..option)
+							sys.exit(-1)
 						else 
 							if directory == nil and not sys.File(option).exists then
 								directory = sys.Directory(option)
 								if not directory.exists then
-									error('cannot find "'..option..'"')
+									error("cannot find file "..option)
 								end
 							else 
 								file = sys.File(option)
 								if not file.exists then
-									error('cannot find "'..option..'"')
+									error("cannot find file "..option)
 								end
 							end
 						end
@@ -103,7 +97,7 @@ end
 
 target = sys.File(sys.File(arg[0]).path..target)
 if not target.exists then
-    error("compilation failed, cannot find LuaRT. Check your LuaRT installation")
+    error("Fatal error: compilation failed, check your LuaRT installation")
 end
 
 local fs = sys.tempfile("luartc_")
