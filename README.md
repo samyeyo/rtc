@@ -35,7 +35,8 @@ It does not require a C compiler since it can compile itself.
 #### Build rtc
   
 Open a Windows console prompt, and type "**luart rtc.lua rtc.lua**"
-It should produce a "**rtc.exe**" executable. Move the rtc.exe file to the "**\\bin**" directory in the LuaRT installation path (where **luart.exe** and **wluart.exe** are)
+It should produce a "**rtc.exe**" executable. Move the rtc.exe file to the "**\\bin**" directory in the LuaRT installation path.
+Please not that an already compiled version of rtc is now available with [LuaRT](https://www.luart.org)
 
 ## Usage
 

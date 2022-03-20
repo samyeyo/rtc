@@ -1,8 +1,8 @@
--- | rtc - Lua script to executable compiler
+-- | RTc - Lua script to executable compiler
 -- | Luart.org, Copyright (c) Tine Samir 2022.
 -- | See Copyright Notice in LICENSE.TXT
 -- |---------------------------------------------------
--- | rtc.lua | LuaRT executable compiler
+-- | RTc.lua | LuaRT executable compiler
 
 local zip = require "zip"
 local console = require "console"
@@ -12,7 +12,7 @@ local idx = (package.loaded["embed"] == nil) and 1 or 0
 if #arg == idx then
 	console.writecolor("brightwhite", "Lua")
 	console.writecolor('yellow', "RT")
-	print([[ 0.9.6 - Lua script to executable compiler.
+	print([[ 0.9.7 - Lua script to executable compiler.
 Copyright (c) 2022, Samir Tine.
 	
 usage:	rtc.exe [-s][-c][-w][-o output] [directory] main.lua
@@ -119,7 +119,7 @@ z:close()
 output = sys.File(output or file.name:gsub("(%w+)$", "exe"))
 output:remove()
 target:copy(output.fullpath)
-if sys.cmd('copy /b "'..output.fullpath..'"+"'..fs.fullpath..'" "'..output.fullpath..'"') == 1 then
+if sys.cmd('copy /b "'..output.fullpath..'"+"'..fs.fullpath..'" "'..output.fullpath..'"', true) == 1 then
 	error('Cannot write "'..output.fullpath..'" to disk')
 end
 print(output.name)
