@@ -4,7 +4,7 @@
 
 [![Made with LuaRT](https://badgen.net/badge/Made%20with/LuaRT/yellow)](https://www.luart.org/)
 ![Windows Vista+](https://badgen.net/badge/Windows/Vista%20and%20later/blue?icon=windows)
-[![RTc License](https://badgen.net/badge/License/MIT/green)](#)
+[![MIT License](https://badgen.net/badge/License/MIT/green)](#)
 
 Build standalone Windows executables from your LuaRT scripts.
 
@@ -36,7 +36,7 @@ It does not require a C compiler since it can compile itself.
   
 Open a Windows console prompt, and type "**luart rtc.lua rtc.lua**"
 It should produce a "**rtc.exe**" executable. Move the rtc.exe file to the "**\\bin**" directory in the LuaRT installation path.
-Please not that an already compiled version of rtc is now available with [LuaRT](https://www.luart.org)
+Please note that an already compiled version of rtc is now available with [LuaRT](https://www.luart.org)
 
 ## Usage
 
