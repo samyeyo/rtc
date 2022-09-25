@@ -6,7 +6,7 @@
 ![Windows Vista+](https://badgen.net/badge/Windows/Vista%20and%20later/blue?icon=windows)
 [![MIT License](https://badgen.net/badge/License/MIT/green)](#)
 
-Build standalone Windows executables from your LuaRT scripts.
+Build standalone Windows executables from your Lua scripts.
 
 [Features](#features) |
 [Installation](#installation) |
@@ -17,56 +17,60 @@ Build standalone Windows executables from your LuaRT scripts.
 
 ## Features
   
-- Build native executable (.exe) from your LuaRT scripts
+- Build Windows native executable (.exe) from your Lua scripts
 - Windows desktop or console applications
 - Static executables (without LUA54.DLL dependency)
 - Dynamic executables (with LUA54.DLL dependency)
 - Embed any files with your executables
-- Access embedded files seamlessly from your LuaRT scripts
-- Deploy your applications easily without the need to install LuaRT
+- Access embedded files seamlessly from your Lua scripts
+- Deploy your applications easily without the need to install Lua
+- Use a simple GUI frontend, more user friendly
 
 ## Installation
 
-#### Requirements
-  
-rtc is written entirely in LuaRT and relies on a valid LuaRT installation to be built.
-It does not require a C compiler since it can compile itself.
+#### Using latest release package
+
+The easiest way to install is to download the latest binary release from the Github repository.
+Just add the directory where you have unpacked the release package to your Windows system PATH variable.
+
+If you use the release package, you don't need any other dependencies to compile Lua scripts.
 
 #### Build rtc
   
-Open a Windows console prompt, and type "**luart rtc.lua rtc.lua**"
-It should produce a "**rtc.exe**" executable. Move the rtc.exe file to the "**\\bin**" directory in the LuaRT installation path.
-Please note that an already compiled version of rtc is now available with [LuaRT](https://www.luart.org)
+To build **rtc**, you will need to install the LuaRT source before to proceed.
+Go to the ```src\``` directory in the LuaRT folder and type "**make rtc**" in a command prompt.
+It should produce a "**rtc.exe**" and "**wrtc.exe**"executable. 
+
 
 ## Usage
 
-#### Command line options
+#### rtc command line options
   
 ```
-usage:	rtc.exe [-s][-c][-w][-o output] [directory] main.lua
+usage:	rtc.exe [-s][-c][-w][-o output][-i icon] [directory] main.lua
 	-s		create a static executable (without LUA54.dll dependency)
 	-c		create executable for console application (default)
 	-w		create executable for Windows desktop application
+	-i 		change default executable icon with the one provided.
 	-o output	set executable name to 'output'
 	directory	the content of the directory to be embedded in the executable
 	main.lua   	the Lua script to be executed
 ```
   
-The specified optional directory will then be embedded within the executable with all its content archived in the ZIP format. 
+The specified optional directory will then be embedded within the executable with all its content archived in the ZIP format, bundled with the generated executable.
+
+As an alternative, you can use **wrtc.exe**, the GUI frontend which is more usert friendly.
 
 #### Accessing embedded files from your LuaRT application
   
-To access embedded files from your LuaRT application, just **require** for the "**embed**" module. It will return a Zip value, already open for read access, that contains the directory content provided on the command line during compilation with rtc :
+To access embedded files from your LuaRT application, just use the global "**embed**" module. It will return a Zip value, already open for read access, that contains the directory content provided on the command line during compilation with rtc :
 
 ```lua
--- require the "embed" module (returns a Zip object)
-local embed = require "embed"
-
 -- extract all the embedded content
 embed:extractall("c:/installdir/")
 ```
 
-If no embedded content exists, **require "embed"** will return a **nil** value. You can check that the current script is compiled using the **package.preload["embed"]** table.
+If no embedded content exists, "**embed**" will be set to a **nil** value. You should check that the current script is compiled embed table before using it.
   
 #### Requiring Lua modules from embedded files
 
