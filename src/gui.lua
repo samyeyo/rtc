@@ -19,7 +19,7 @@ end
 
 local script = setLabelBtn(ui.Entry(win, "", 10, 10, win.width-130), "Main Lua script : ", 10, 26, File("img/open.ico"), "The Lua script to be run when the generated executable starts")
 local embed = setLabelBtn(ui.Entry(win, "", 10, 10, win.width-130), "Embed directory: ", 10, 52, File("img/open.ico"), "The content of the directory will be embedded in the generated executable")
-local output = setLabelBtn(ui.Entry(win, "", 10, 10, win.width-130), "Executable : ", 10, 78, File("img/open.ico"), "The content of the directory will be embedded in the generated executable", true)
+local output = setLabelBtn(ui.Entry(win, "", 10, 10, win.width-130), "Executable : ", 10, 78, File("img/open.ico"), "The generated executable name", true)
 
 local group = ui.Groupbox(win, "Windows subsystem", 10, 116, 130, 90)
 local radioconsole= ui.Radiobutton(group, "Console", 10, 26)
