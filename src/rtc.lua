@@ -22,7 +22,7 @@ if package.loaded["ui"] == nil then
 	if #arg == idx then
 		console.writecolor("brightwhite", "Lua")
 		console.writecolor('yellow', "RT")
-		print([[ 0.9.9 - Lua script to executable compiler.
+		print([[ 1.0.0 - Lua script to executable compiler.
 Copyright (c) 2022, Samir Tine.
 	
 usage:	rtc.exe [-s][-c][-w][-i icon][-o output] [directory] main.lua
