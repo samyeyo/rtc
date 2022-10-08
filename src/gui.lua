@@ -32,7 +32,7 @@ radiodynamic.checked = true
 local radiostatic = ui.Radiobutton(group, "Static", 26, 50)
 
 local lbl = ui.Label(win, "Executable icon", 300, 136)
-local iconBtn = ui.Button(win, "", 300+lbl.width/2-16, lbl.y + lbl.height+4, 32, 32)
+local iconBtn = ui.Button(win, "", math.floor(300+lbl.width/2-16), lbl.y + lbl.height+4, 32, 32)
 iconBtn.hastext = false
 
 local execBtn = ui.Button(win, "Generate executable", 134, 220)
