@@ -4,7 +4,7 @@
 -- |---------------------------------------------------
 -- | RTc.lua | LuaRT executable compiler
 
-local zip = require "zip"
+local zip = require "compression"
 
 local output				-- output executable filename
 local icon					-- executable icon
