@@ -138,7 +138,6 @@ end
 
 if ui then
 	ui.info("Successfully compiled "..output.name)
-	sys.cmd('start explorer "'..output.path..'"')
 else
 	print(output.name)
 end
