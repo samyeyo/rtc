@@ -6,7 +6,7 @@ win:loadicon(File("img/rtc.ico"))
 
 local function setLabelBtn(widget, text, x, y, icon, tooltip, nobtn)
     widget.label = ui.Label(win, text, x, y)
-    widget.x = widget.label.x + widget.label.width + (nobtn and 22 or 2)
+    widget.x = nobtn and (widget.label.x + widget.label.width + 26) or 106
     widget.y = widget.label.y - 3
     if not nobtn then
         widget.chooseBtn = ui.Button(win, "", widget.x + widget.width + 1, widget.y-2, 24, 24)
@@ -17,9 +17,9 @@ local function setLabelBtn(widget, text, x, y, icon, tooltip, nobtn)
     return widget
 end
 
-local script = setLabelBtn(ui.Entry(win, "", 10, 10, win.width-130), "Main Lua script : ", 10, 26, File("img/open.ico"), "The Lua script to be run when the generated executable starts")
-local embed = setLabelBtn(ui.Entry(win, "", 10, 10, win.width-130), "Embed directory: ", 10, 52, File("img/open.ico"), "The content of the directory will be embedded in the generated executable")
-local output = setLabelBtn(ui.Entry(win, "", 10, 10, win.width-130), "Executable : ", 10, 78, File("img/open.ico"), "The generated executable name", true)
+local script = setLabelBtn(ui.Entry(win, "", 10, 10, win.width-142), "Main Lua script : ", 10, 26, File("img/open.ico"), "The Lua script to be run when the generated executable starts")
+local embed = setLabelBtn(ui.Entry(win, "", 10, 10, win.width-142), "Embed directory: ", 10, 52, File("img/open.ico"), "The content of the directory will be embedded in the generated executable")
+local output = setLabelBtn(ui.Entry(win, "", 10, 10, win.width-142), "Executable : ", 10, 78, File("img/open.ico"), "The generated executable name", true)
 
 local group = ui.Groupbox(win, "Windows subsystem", 10, 116, 130, 90)
 local radioconsole= ui.Radiobutton(group, "Console", 10, 26)
@@ -37,7 +37,6 @@ iconBtn.hastext = false
 
 local execBtn = ui.Button(win, "Generate executable", 134, 220)
 execBtn:loadicon(File("img/exec.ico"))
-execBtn.enabled = false
 
 function iconBtn:onClick()
     local f = ui.opendialog("Select an icon", false, "ICO files (*.ico)|*.ico")
@@ -45,7 +44,6 @@ function iconBtn:onClick()
         icon = f.fullpath
         iconBtn:loadicon(f)
     else
-        iconBtn:loadicon(nil)
         icon = nil
     end
 end
@@ -61,14 +59,13 @@ radioconsole.onClick = update_icon
 radiodesktop.onClick = update_icon
 
 if #arg >= 1 and arg[1]:sub(1,1) ~= '-' then
-    script.text = arg[1]
+    script.text = sys.File(arg[1]).fullpath
     if arg[2] ~= nil and arg[2]:sub(1,1) ~= '-' then
         embed.text = arg[2]
     end
 end
 
 function script:onChange()
-    execBtn.enabled = sys.File(script.text).exists
     radioconsole.checked = script.text:match("(%.%w+)$") ~= ".wlua"
     radiodesktop.checked = not radioconsole.checked
     update_icon()
@@ -104,6 +101,10 @@ function execBtn:onClick()
     if #embed.text > 0 and not sys.Directory(embed.text).exists then
        ui.error("Embedded directory does not exists")
     else
+        local f = sys.File(output.text)
+        if f.exists and ui.confirm(f.name.." already exist.\nDo you want to proceed and replace the existing file ?") ~= "yes" then
+            return
+        end
         win:hide()
     end
 end
