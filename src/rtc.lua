@@ -16,14 +16,14 @@ local console, gui
 
 ui = false
 
-if package.loaded["ui"] == nil then
+if arg[0]:find("wrtc%.exe") == nil then
 	console = require "console"
 	local idx = (package.loaded["embed"] == nil) and 1 or 0
 	if #arg == idx then
 		console.writecolor("brightwhite", "Lua")
 		console.writecolor('yellow', "RT")
-		print([[ 1.1.0 - Lua script to executable compiler.
-Copyright (c) 2022, Samir Tine.
+		print([[ 1.3.0 - Lua script to executable compiler.
+Copyright (c) 2023, Samir Tine.
 	
 usage:	rtc.exe [-s][-c][-w][-i icon][-o output] [directory] main.lua
 	
@@ -56,7 +56,7 @@ usage:	rtc.exe [-s][-c][-w][-i icon][-o output] [directory] main.lua
 			setoutput = true
 		elseif option == "-s" then
 			static = true
-		elseif option:sub(1,1) == "-" then 
+		elseif option:wsub(1,1) == "-" then 
 			print("invalid option "..option)
 			sys.exit(-1)
 		elseif directory == nil and not sys.File(option).exists then
@@ -124,7 +124,7 @@ if directory ~= nil then
 end
 z:close()
 
-output = sys.File(output or file.name:gsub("(%w+)$", "exe"))
+output = sys.File(output or file.name:gwsub("(%w+)$", "exe"))
 output:remove()
 target:copy(output.fullpath)
 
