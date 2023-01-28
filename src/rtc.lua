@@ -56,7 +56,7 @@ usage:	rtc.exe [-s][-c][-w][-i icon][-o output] [directory] main.lua
 			setoutput = true
 		elseif option == "-s" then
 			static = true
-		elseif option:wsub(1,1) == "-" then 
+		elseif option:usub(1,1) == "-" then 
 			print("invalid option "..option)
 			sys.exit(-1)
 		elseif directory == nil and not sys.File(option).exists then
@@ -124,7 +124,7 @@ if directory ~= nil then
 end
 z:close()
 
-output = sys.File(output or file.name:gwsub("(%w+)$", "exe"))
+output = sys.File(output or file.name:gusub("(%w+)$", "exe"))
 output:remove()
 target:copy(output.fullpath)
 
@@ -137,7 +137,7 @@ if sys.cmd('copy /b "'..output.fullpath..'"+"'..fs.fullpath..'" "'..output.fullp
 end
 
 if ui then
-	ui.info("Successfully compiled "..output.name)
+	print("Successfully compiled "..output.name.." ("..math.floor(output.size/1024).."Kb)")
 else
 	print(output.name)
 end
