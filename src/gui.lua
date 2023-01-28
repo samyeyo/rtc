@@ -119,6 +119,12 @@ end
 
 local directory = #embed.text > 0 and sys.Directory(embed.text) or nil
 
+if radiodesktop.checked then
+    target = "wluart"
+else
+    target = "luart"
+end
+
 if radiostatic.checked then
     target = target.."-static"
 end
