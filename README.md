@@ -1,6 +1,6 @@
 <div align="center">
 
-# rtc
+![rtc][title] 
 
 [![Made with LuaRT](https://badgen.net/badge/Made%20with/LuaRT/yellow)](https://www.luart.org/)
 ![Windows Vista+](https://badgen.net/badge/Windows/Vista%20and%20later/blue?icon=windows)
@@ -11,20 +11,22 @@ Build standalone Windows executables from your Lua scripts.
 [Features](#features) |
 [Installation](#installation) |
 [Usage](#usage) |
+[Documentation](https://www.luart.org/doc/toolchain/rtc.html) |
 [Links](#links) |
 [License](#license)
 </div>
 
 ## Features
-  
-- Build Windows native executable (.exe) from your Lua scripts
+
+- Standalone tool : no Makefile, no C compiler needed
+- Build Windows native executable (.exe) from your Lua 5.4.4 scripts
 - Windows desktop or console applications
-- Static executables (without LUA54.DLL dependency)
-- Dynamic executables (with LUA54.DLL dependency)
-- Embed any files with your executables
+- Static executables (without `lua54.dll` dependency)
+- Dynamic executables (with `lua54.dll` dependency)
+- Embed any files with your executable, even Lua binary modules with in-memory loading
 - Access embedded files seamlessly from your Lua scripts
 - Deploy your applications easily without the need to install Lua
-- Use a simple GUI frontend, more user friendly
+- Compile from command line or using a GUI frontend
 
 ## Installation
 
@@ -37,7 +39,7 @@ If you use the release package, you don't need any other dependencies to compile
 
 #### Build rtc
   
-To build **rtc**, you will need to install the LuaRT source before to proceed.
+To build **rtc**, you will need to install the LuaRT programming framework sources before to proceed.
 Go to the ```src\``` directory in the LuaRT folder and type "**make rtc**" in a command prompt.
 It should produce a "**rtc.exe**" and "**wrtc.exe**"executable. 
 
@@ -48,7 +50,7 @@ It should produce a "**rtc.exe**" and "**wrtc.exe**"executable.
   
 ```
 usage:	rtc.exe [-s][-c][-w][-o output][-i icon] [directory] main.lua
-	-s		create a static executable (without LUA54.dll dependency)
+	-s		create a static executable (without lua54.dll dependency)
 	-c		create executable for console application (default)
 	-w		create executable for Windows desktop application
 	-i 		change default executable icon with the one provided.
@@ -63,7 +65,7 @@ As an alternative, you can use **wrtc.exe**, the GUI frontend which is more user
 
 #### Accessing embedded files from your LuaRT application
   
-To access embedded files from your LuaRT application, just use the global "**embed**" module. It will return a Zip value, already open for read access, that contains the directory content provided on the command line during compilation with rtc :
+To access embedded files from your LuaRT application, just use the global "**embed**" module. It will return a Zip instance, already open for read access, that contains the directory content provided on the command line during compilation with rtc :
 
 ```lua
 -- extract all the embedded content
@@ -71,10 +73,11 @@ embed:extractall("c:/installdir/")
 ```
 
 If no embedded content exists, "**embed**" will be set to a **nil** value. You should check that the current script is compiled embed table before using it.
+See the [LuaRT Zip object documentation](https://www.luart.org/doc/compression/Zip.html) for more information.
   
 #### Requiring Lua modules from embedded files
 
-To require a LuaRT script file in the embedded files, use **require** with the name of the module. Please note that it works only for Lua modules, not binary modules (DLL) that still needs to be extracted before use.
+To require a LuaRT script file in the embedded files, use **require** with the name of the module. You can require Lua modules, and binary modules (DLL) without the need to extract first (please note that in-memory binary modules loading works only with dynamic executables and may not work for some modules).
 
 ```lua
 -- require for the english.lua module, that must have been previously embedded with rtc 
@@ -84,12 +87,14 @@ print(english.hello)
   
 ## Links
   
-- [LuaRT Homepage](http://www.luart.org/)
-- [LuaRT Community](http://community.luart.org/)
-- [LuaRT Documentation](http://www.luart.org/doc)
+- [rtc Documentation](https://www.luart.org/doc/toolchain/rtc.html)
+- [LuaRT Homepage](https://www.luart.org/)
+- [LuaRT Community](https://community.luart.org/)
 
 ## License
   
-LuaRT and rtc are copyright (c) 2022 Samir Tine.
+LuaRT and rtc are copyright (c) 2023 Samir Tine.
 rtc is open source, released under the MIT License.
 See full copyright notice in the LICENSE file.
+
+[title]: rtc.png
