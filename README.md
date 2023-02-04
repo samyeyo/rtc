@@ -43,7 +43,6 @@ To build **rtc**, you will need to install the LuaRT programming framework sourc
 Go to the ```src\``` directory in the LuaRT folder and type "**make rtc**" in a command prompt.
 It should produce a "**rtc.exe**" and "**wrtc.exe**"executable. 
 
-
 ## Usage
 
 #### rtc command line options
@@ -60,8 +59,10 @@ usage:	rtc.exe [-s][-c][-w][-o output][-i icon] [directory] main.lua
 ```
   
 The specified optional directory will then be embedded within the executable with all its content archived in the ZIP format, bundled with the generated executable.
-
 As an alternative, you can use **wrtc.exe**, the GUI frontend which is more usert friendly.
+
+> **Warning**
+> Compiled dynamic executable depends on the provided `lua54.dll` library. Do not use any other library or your application will throw an error or may crash.
 
 #### Accessing embedded files from your LuaRT application
   
