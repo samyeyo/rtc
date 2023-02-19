@@ -21,13 +21,13 @@ if arg[0]:find("wrtc%.exe") == nil then
 	local idx = (package.loaded["embed"] == nil) and 1 or 0
 	if #arg == idx then
 		console.writecolor("brightwhite", "Lua")
-		console.writecolor('yellow', "RT")
-		print([[ 1.3.1 - Lua script to executable compiler.
+		console.writecolor('yellow', "RT ")
+		print(_VERSION:match(" (.*)$")..[[ - Lua script to executable compiler.
 Copyright (c) 2023, Samir Tine.
 	
 usage:	rtc.exe [-s][-c][-w][-i icon][-o output] [directory] main.lua
 	
-	-s		create static executable (without lua54.dll dependency)
+	-s		create static executable (without LUA54.DLL dependency)
 	-c		create executable for console (default)
 	-w		create executable for Windows desktop
 	-i icon		set executable icon (expects an .ico file)
