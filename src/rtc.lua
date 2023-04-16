@@ -78,7 +78,7 @@ usage:	rtc.exe [-s][-c][-w][-i icon][-o output] [-lmodname] [directory] main.lua
 else
 	ui = require "ui"
 	local result = require("gui")
-	file, directory, target, output, icon = table.unpack(result)
+	file, directory, target, output, icon, libs = table.unpack(result)
 end
 
 if #libs > 0 and static then
@@ -129,6 +129,9 @@ z:write(fname, "__mainLuaRTStartup__.lua")
 
 for lib in each(libs) do
 	local libfile = sys.File(sys.File(arg[0]).path.."/../modules/"..lib.."/"..lib..".dll")
+	if not libfile.exists then
+		libfile = sys.File(sys.currentdir.."/"..lib..".dll")
+	end
 	if libfile.exists then
 		z:write(libfile)
 	else

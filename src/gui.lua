@@ -1,12 +1,12 @@
 local File =  embed == nil and sys.File  or embed.File
 local icon
 
-local win = ui.Window("rtc - Lua script to executable compiler", "fixed", 400, 260, "fixed")
+local win = ui.Window("rtc - Lua script to executable compiler", "fixed", 400, 300, "fixed")
 win:loadicon(File("img/rtc.ico"))
 
-local function setLabelBtn(widget, text, x, y, icon, tooltip, nobtn)
+local function setLabelBtn(widget, text, x, y, icon, tooltip, nobtn, delta)
     widget.label = ui.Label(win, text, x, y)
-    widget.x = nobtn and (widget.label.x + widget.label.width + 26) or 106
+    widget.x = nobtn and (widget.label.x + widget.label.width + delta) or 106
     widget.y = widget.label.y - 3
     if not nobtn then
         widget.chooseBtn = ui.Button(win, "", widget.x + widget.width + 1, widget.y-2, 24, 24)
@@ -19,23 +19,24 @@ end
 
 local script = setLabelBtn(ui.Entry(win, "", 10, 10, win.width-142), "Main Lua script : ", 10, 26, File("img/open.ico"), "The Lua script to be run when the generated executable starts")
 local embed = setLabelBtn(ui.Entry(win, "", 10, 10, win.width-142), "Embed directory: ", 10, 52, File("img/open.ico"), "The content of the directory will be embedded in the generated executable")
-local output = setLabelBtn(ui.Entry(win, "", 10, 10, win.width-142), "Executable : ", 10, 78, File("img/open.ico"), "The generated executable name", true)
+local modules = setLabelBtn(ui.Entry(win, "", 10, 10, win.width-142), "Embed modules: ", 10, 78, nil, "modules to be embedded, by name, separated with a space", true, 0)
+local output = setLabelBtn(ui.Entry(win, "", 10, 10, win.width-142), "Executable : ", 10, 104, nil, "The generated executable name", true, 26)
 
-local group = ui.Groupbox(win, "Windows subsystem", 10, 116, 130, 90)
+local group = ui.Groupbox(win, "Windows subsystem", 10, 142, 130, 90)
 local radioconsole= ui.Radiobutton(group, "Console", 10, 26)
 radioconsole.checked = true
 local radiodesktop = ui.Radiobutton(group, "Windows desktop", 10, 50)
 
-local group = ui.Groupbox(win, "Runtime library", 150, 116, 130, 90)
+local group = ui.Groupbox(win, "Runtime library", 150, 142, 130, 90)
 local radiodynamic = ui.Radiobutton(group, "Dynamic", 26, 26)
 radiodynamic.checked = true
 local radiostatic = ui.Radiobutton(group, "Static", 26, 50)
 
-local lbl = ui.Label(win, "Executable icon", 300, 136)
+local lbl = ui.Label(win, "Executable icon", 300, 162)
 local iconBtn = ui.Button(win, "", math.floor(300+lbl.width/2-16), lbl.y + lbl.height+4, 32, 32)
 iconBtn.hastext = false
 
-local execBtn = ui.Button(win, "Generate executable", 134, 220)
+local execBtn = ui.Button(win, "Generate executable", 142, 256)
 execBtn:loadicon(File("img/exec.ico"))
 
 function iconBtn:onClick()
@@ -86,11 +87,17 @@ function embed.chooseBtn:onClick()
     end
 end
 
+function radiodynamic:onClick()
+    modules.enabled = radiodynamic.checked;
+end
+
+
 function radiostatic:onClick()
     if self.checked and ui.confirm( "It is strongly discouraged to use the static runtime library if you are using Lua binary modules.\nThis can lead to bugs and crashes of your application.\n\nPlease confirm that you want to use the static runtime library.", "Using static LuaRT runtime") == "cancel" then
         self.checked = false
         radiodynamic.checked = true
     end
+    modules.enabled = radiodynamic.checked;
 end
 
 function win:onClose()
@@ -129,10 +136,16 @@ if radiostatic.checked then
     target = target.."-static"
 end
 
+local libs = {}
+for mod in modules.text:gmatch("(%w+)") do
+    libs[#libs+1] = mod
+end
+
 return { 
     sys.File(script.text),
     directory,
     target..".exe",
     output.text,
-    icon
+    icon,
+    libs
 }
