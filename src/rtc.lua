@@ -1,5 +1,5 @@
 -- | RTc - Lua script to executable compiler
--- | Luart.org, Copyright (c) Tine Samir 2022.
+-- | Luart.org, Copyright (c) Tine Samir 2023
 -- | See Copyright Notice in LICENSE.TXT
 -- |---------------------------------------------------
 -- | RTc.lua | LuaRT executable compiler
@@ -15,23 +15,25 @@ local setoutput, set_icon, static, forceconsole = false, false, false, false
 local console, gui
 
 ui = false
+local libs = {}
 
 if arg[0]:find("wrtc%.exe") == nil then
 	console = require "console"
 	local idx = (package.loaded["embed"] == nil) and 1 or 0
 	if #arg == idx then
-		console.writecolor("brightwhite", "Lua")
-		console.writecolor('yellow', "RT ")
+		console.writecolor("lightblue", "rt")
+		console.writecolor('yellow', "c ")
 		print(_VERSION:match(" (.*)$")..[[ - Lua script to executable compiler.
 Copyright (c) 2023, Samir Tine.
 	
-usage:	rtc.exe [-s][-c][-w][-i icon][-o output] [directory] main.lua
+usage:	rtc.exe [-s][-c][-w][-i icon][-o output] [-lmodname] [directory] main.lua
 	
 	-s		create static executable (without LUA54.DLL dependency)
 	-c		create executable for console (default)
 	-w		create executable for Windows desktop
 	-i icon		set executable icon (expects an .ico file)
 	-o output	set executable name to 'output'
+	-lmodname	link the LuaRT binary module 'modname.dll'
 	directory	the content of the directory to be embedded in the executable
 	main.lua   	the Lua script to be executed]])
 		sys.exit()
@@ -56,6 +58,8 @@ usage:	rtc.exe [-s][-c][-w][-i icon][-o output] [directory] main.lua
 			setoutput = true
 		elseif option == "-s" then
 			static = true
+		elseif option:find("-l") == 1 then
+			libs[#libs+1] = option:match("%-l(%w+)")
 		elseif option:usub(1,1) == "-" then 
 			print("invalid option "..option)
 			sys.exit(-1)
@@ -75,6 +79,10 @@ else
 	ui = require "ui"
 	local result = require("gui")
 	file, directory, target, output, icon = table.unpack(result)
+end
+
+if #libs > 0 and static then
+	error("could not link modules in static mode")
 end
 
 if file == nil then
@@ -119,6 +127,15 @@ local z = zip.Zip(fs.fullpath, "write")
 z:write(file)
 z:write(fname, "__mainLuaRTStartup__.lua")
 
+for lib in each(libs) do
+	local libfile = sys.File(sys.File(arg[0]).path.."/../modules/"..lib.."/"..lib..".dll")
+	if libfile.exists then
+		z:write(libfile)
+	else
+		error("module '"..lib.."' not found")
+	end
+end
+
 if directory ~= nil then
 	z:write(directory)
 end
@@ -132,7 +149,7 @@ if icon ~= nil then
 	seticon(output.fullpath, icon)
 end
 
-if sys.cmd('copy /b "'..output.fullpath..'"+"'..fs.fullpath..'" "'..output.fullpath..'"', true) == 1 then
+if link(fs.fullpath, output.fullpath) == false then
 	error('Cannot write "'..output.fullpath..'" to disk')
 end
 
@@ -141,3 +158,6 @@ if ui then
 else
 	print(output.name)
 end
+fs:close()
+fs:remove()
+fname:remove()
