@@ -20,7 +20,7 @@ Build standalone Windows executables from your Lua scripts.
 
 - Standalone tool : no Makefile, no C compiler needed
 - Compile from command line or using a GUI frontend
-- Build Windows native executable (.exe) from your Lua 5.4.4 scripts
+- Build Windows native executable (.exe) from your Lua 5.4.5 scripts
 - Windows desktop or console applications
 - Static executables (without `lua54.dll` dependency)
 - Dynamic executables (with `lua54.dll` dependency)
