@@ -120,17 +120,17 @@ local fs = sys.tempfile("luartc_")
 local fname = sys.tempfile("luartc_main_")
 
 fname:open("write", "binary")
-fname:write('require "'..file.name:gsub(file.extension, "")..'"')
+fname:write(string.dump(result, true))
 fname:close()
 
 local z = zip.Zip(fs.fullpath, "write")
-z:write(file)
 z:write(fname, "__mainLuaRTStartup__.lua")
 
 for lib in each(libs) do
-	local libfile = sys.File(sys.File(arg[0]).path.."/../modules/"..lib.."/"..lib..".dll")
+	local libpath = sys.Directory(sys.File(arg[0]).path.."/../modules/").exists and sys.File(arg[0]).path.."/../modules/" or sys.File(arg[0]).path.."/modules/"
+	local libfile = sys.File(libpath..lib.."/"..lib..".dll")
 	if not libfile.exists then
-		libfile = sys.File(sys.currentdir.."/"..lib..".dll")
+		libfile = sys.File(libpath.."/"..lib..".dll")
 	end
 	if libfile.exists then
 		z:write(libfile)
@@ -147,6 +147,7 @@ z:close()
 output = sys.File(output or file.name:gusub("(%w+)$", "exe"))
 output:remove()
 target:copy(output.fullpath)
+target:remove()
 
 if icon ~= nil then
 	seticon(output.fullpath, icon)
