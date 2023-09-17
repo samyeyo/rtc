@@ -20,11 +20,11 @@ Build standalone Windows executables from your Lua scripts.
 
 - Standalone tool : no Makefile, no C compiler needed
 - Compile from command line or using a GUI frontend
-- Build Windows native executable (.exe) from your Lua 5.4.5 scripts
+- Build Windows native executable (.exe) from your Lua 5.4.6 scripts
 - Windows desktop or console applications
 - Static executables (without `lua54.dll` dependency)
 - Dynamic executables (with `lua54.dll` dependency)
-- Embed any files with your executable, even Lua binary modules with in-memory loading
+- Embed any files with your executable, even Lua binary modules with seamless loading using `require()`
 - Access embedded files seamlessly from your Lua scripts
 - Deploy your applications easily without the need to install Lua
 
@@ -48,12 +48,13 @@ It should produce a "**rtc.exe**" and "**wrtc.exe**"executable.
 #### rtc command line options
   
 ```
-usage:	rtc.exe [-s][-c][-w][-o output][-i icon] [directory] main.lua
-	-s		create a static executable (without lua54.dll dependency)
-	-c		create executable for console application (default)
-	-w		create executable for Windows desktop application
-	-i 		change default executable icon with the one provided.
+usage:	rtc.exe [-s][-c][-w][-i icon][-o output] [-lmodname] [directory] main.lua
+	-s		create static executable (without LUA54.DLL dependency)
+	-c		create executable for console (default)
+	-w		create executable for Windows desktop
+	-i icon		set executable icon (expects an .ico file)
 	-o output	set executable name to 'output'
+	-lmodname	link the LuaRT binary module 'modname.dll'
 	directory	the content of the directory to be embedded in the executable
 	main.lua   	the Lua script to be executed
 ```
