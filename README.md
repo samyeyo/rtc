@@ -90,6 +90,7 @@ print(english.hello)
 ## Links
   
 - [rtc Documentation](https://www.luart.org/doc/toolchain/rtc.html)
+- [rtc Tutorial](https://www.luart.org/doc/tutorial/rtc.html)
 - [LuaRT Homepage](https://www.luart.org/)
 - [LuaRT Community](https://community.luart.org/)
 
