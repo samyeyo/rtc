@@ -1,5 +1,14 @@
 # rtc Changelog
 
+## rtc v1.6.0 (Nov 26 2023)
+
+### General
+- Updated rtc with LuaRT toolchain to v1.6.0
+
+### rtc
+- Fixed: `rtc` compiled executables with embedded modules can have now multiple running instances
+
+
 ## rtc v1.5.2 (Sept 17 2023)
 
 ### General
