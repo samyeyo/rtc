@@ -20,12 +20,13 @@ Build standalone Windows executables from your Lua scripts.
 
 - Standalone tool : no Makefile, no C compiler needed
 - Compile from command line or using a GUI frontend
-- Build Windows native executable (.exe) from your Lua 5.4.6 scripts
+- Build Windows native executable (.exe) from your Lua 5.4.8 scripts
 - Windows desktop or console applications
-- Static executables (without `lua54.dll` dependency)
+- Static executables (without `lua54.dll` dependency, supports Lua binary modules)
 - Dynamic executables (with `lua54.dll` dependency)
 - Embed any files with your executable, even Lua binary modules with seamless loading using `require()`
-- Access embedded files seamlessly from your Lua scripts
+- Loads DLL dependencies in embedded files transparently
+- Access embedded files seamlessly from your Lua scripts using `sys.File()`
 - Deploy your applications easily without the need to install Lua
 
 ## Installation
@@ -54,6 +55,7 @@ usage:	rtc.exe [-s][-c][-w][-i icon][-o output] [-lmodname] [directory] main.lua
 	-w		create executable for Windows desktop
 	-i icon		set executable icon (expects an .ico file)
 	-o output	set executable name to 'output'
+	-Lmoddir	add a new search path for modules
 	-lmodname	link the LuaRT binary module 'modname.dll'
 	directory	the content of the directory to be embedded in the executable
 	main.lua   	the Lua script to be executed
@@ -78,8 +80,8 @@ If no embedded content exists, "**embed**" will be set to a **nil** value. You s
 See the [LuaRT Zip object documentation](https://www.luart.org/doc/compression/Zip.html) for more information.
   
 #### Requiring Lua modules from embedded files
-
-To require a LuaRT script file in the embedded files, use **require** with the name of the module. You can require Lua modules, and binary modules (DLL) without the need to extract first (please note that in-memory binary modules loading works only with dynamic executables and may not work for some modules).
+ 
+To require a LuaRT script file in the embedded files, use **require** with the name of the module. You can require Lua modules, and binary modules (DLL) without the need to extract first.
 
 ```lua
 -- require for the english.lua module, that must have been previously embedded with rtc 
@@ -96,7 +98,7 @@ print(english.hello)
 
 ## License
   
-LuaRT and rtc are copyright (c) 2023 Samir Tine.
+LuaRT and rtc are copyright (c) 2025 Samir Tine.
 rtc is open source, released under the MIT License.
 See full copyright notice in the LICENSE file.
 

@@ -1,5 +1,5 @@
 -- | RTc - Lua script to executable compiler
--- | Luart.org, Copyright (c) Tine Samir 2023
+-- | Luart.org, Copyright (c) Tine Samir 2025
 -- | See Copyright Notice in LICENSE.TXT
 -- |---------------------------------------------------
 -- | RTc.lua | LuaRT executable compiler
@@ -11,22 +11,23 @@ local icon					-- executable icon
 local directory				-- Directory to be embedded in the executable
 local file					-- main Lua File to be executed when running the executable
 local target = "luart.exe"	-- target interpreter for console or window subsystem
-local setoutput, set_icon, static, forceconsole = false, false, false, false
+local setoutput, set_icon, forceconsole = false, false, false
 local console, gui
+static = false
 
-ui = false
 local libs = {}
+local files = {}
+local libpaths = { sys.File(arg[-1]).path.."..\\modules\\" }
 
-if arg[0]:find("wrtc%.exe") == nil then
+if (arg[-1]:find("wrtc") or arg[-1]:find("wluart")) == nil then
 	console = require "console"
-	local idx = (package.loaded["embed"] == nil) and 1 or 0
-	if #arg == idx then
+	if arg[1] == nil then
 		console.writecolor("lightblue", "rt")
 		console.writecolor('yellow', "c ")
 		print(_VERSION:match(" (.*)$")..[[ - Lua script to executable compiler.
-Copyright (c) 2023, Samir Tine.
+Copyright (c) 2025, Samir Tine.
 	
-usage:	rtc.exe [-s][-c][-w][-i icon][-o output] [-lmodname] [directory] main.lua
+usage:	rtc.exe [-s][-c][-w][-i icon][-o output] [-lmodname] [directory] main.lua [file1.lua file2.lua...]
 	
 	-s		create static executable (without LUA54.DLL dependency)
 	-c		create executable for console (default)
@@ -34,13 +35,15 @@ usage:	rtc.exe [-s][-c][-w][-i icon][-o output] [-lmodname] [directory] main.lua
 	-i icon		set executable icon (expects an .ico file)
 	-o output	set executable name to 'output'
 	-lmodname	link the LuaRT binary module 'modname.dll'
+	-Lmoddir	add a new search path for modules
 	directory	the content of the directory to be embedded in the executable
 	main.lua   	the Lua script to be executed]])
 		sys.exit()
 	end
 
 	------------------------------------| Parse commande line
-	for i, option in ipairs(arg) do
+	for i=1, #arg do
+		local option = arg[i]
 		if setoutput then
 			output = option
 			setoutput = false
@@ -60,30 +63,32 @@ usage:	rtc.exe [-s][-c][-w][-i icon][-o output] [-lmodname] [directory] main.lua
 			static = true
 		elseif option:find("-l") == 1 then
 			libs[#libs+1] = option:match("%-l(%w+)")
+		elseif option:find("-L") == 1 then
+			libpaths[#libpaths+1] = option:sub(3, -1)
 		elseif option:usub(1,1) == "-" then 
 			print("invalid option "..option)
 			sys.exit(-1)
 		elseif directory == nil and not sys.File(option).exists then
 			directory = sys.Directory(option)
 			if not directory.exists then
-				error("cannot find file "..option)
+				error("cannot find directory "..option)
 			end
 		else 
-			file = sys.File(option)
-			if not file.exists then
+			local f = sys.File(option)
+			if not f.exists then
 				error("cannot find file "..option)
 			end
+			files[#files+1] = f
 		end
 	end
 else
 	ui = require "ui"
 	local result = require("gui")
 	file, directory, target, output, icon, libs = table.unpack(result)
+	files = { file }
 end
 
-if #libs > 0 and static then
-	error("could not link modules in static mode")
-end
+file = files[1]
 
 if file == nil then
 	error("no input file")
@@ -101,41 +106,82 @@ if static then
 	end
 end
 
-result, err = load(file:open():read())
-if result == nil then
-	error(err)
+if embed == nil then
+	target = sys.File(sys.File(arg[-1]).path..target)
+else
+	target = sys.File(target)
 end
 
-if embed == nil then
-	target = sys.File(sys.File(arg[0]).path..target)
-else
-	target = embed.File(target)
-end
 
 if not target.exists then
     error("Fatal error: compilation failed, check your LuaRT installation")
 end
 
 local fs = sys.tempfile("luartc_")
-local fname = sys.tempfile("luartc_main_")
-
-fname:open("write", "binary")
-fname:write(string.dump(result, true))
-fname:close()
-
 local z = zip.Zip(fs.fullpath, "write")
+
+local _error = error
+
+local function error(err)
+	_error(err:gsub('%[string "([%w%.]+)"%]', "%1"))
+end
+
+for f in each(files) do
+	if directory == nil or f.directory.fullpath:usearch(directory.fullpath) == nil then
+		local content = f:open():read()
+		local result, err = load(content, f.name)
+		if result == nil then
+			error(err)
+		end
+		local fname = sys.tempfile("luartc_file_")
+		fname:open("write", "binary")
+		fname:write(content)
+		fname:close()
+		z:write(fname, f.name)
+		fname:remove()
+	end
+end
+
+local fname = sys.tempfile("luartc_file_"):open("write", "binary")
+fname:write("load(embed.File('"..files[1].name.."'):open():read(), '"..files[1].name.."')()")
+fname:close()
 z:write(fname, "__mainLuaRTStartup__.lua")
+fname:remove()
+
+
+local ext = static and "-static.dll" or ".dll"
+
 
 for lib in each(libs) do
-	local libpath = sys.Directory(sys.File(arg[0]).path.."/../modules/").exists and sys.File(arg[0]).path.."/../modules/" or sys.File(arg[0]).path.."/modules/"
-	local libfile = sys.File(libpath..lib.."/"..lib..".dll")
-	if not libfile.exists then
-		libfile = sys.File(libpath.."/"..lib..".dll")
+	local libpath
+	for path in each(libpaths) do
+		libpath = path.."/"..lib
+		if sys.Directory(libpath).exists then
+			break
+		end
 	end
-	if libfile.exists then
-		z:write(libfile)
+	local _moddir = sys.Directory(libpath or "")
+	if _moddir.exists then
+		for entry in each(_moddir) do
+			if type(entry) == "File" then
+				if entry.extension == ".dll" and entry.name:find("^"..lib)  then
+					if string.lower(entry.name) == lib..(static and ".dll" or "-static.dll") then
+						goto continue
+					end
+					print("Linking "..lib.." module")
+				end
+				z:write(entry.fullpath, "__modules/"..lib.."/"..entry.name)
+			end
+::continue::			
+		end
 	else
-		error("module '"..lib.."' not found")
+		libfile = sys.File(lib..ext)
+		if not libfile.exists then
+			error("Module '"..lib.."' not found")
+		else
+			print("Linking "..lib.." module")
+			z:write(libfile)
+		end
 	end
 end
 
@@ -160,8 +206,7 @@ end
 if ui then
 	print("Successfully compiled "..output.name.." ("..math.floor(output.size/1024).."Kb)")
 else
-	print(output.name)
+	print("Successfully compiled "..output.name)
 end
 fs:close()
 fs:remove()
-fname:remove()

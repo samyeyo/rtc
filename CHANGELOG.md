@@ -1,5 +1,47 @@
 # rtc Changelog
 
+## rtc v2.1 (Sept 16 2025)
+- New: `-L` option to specify a new search path for Lua modules
+- Updated: Link only the correct module DLL (either the static or dynamic version)
+- Fixed: static linking is more reliable now
+
+
+## rtc v2.0 (May 10 2025)
+- New: `sys.File()` now uses embedded files first for compiled scripts.
+- Updated: static compiled executables can now embed and load Lua binary modules (linked with LuaRT `lua54-static.lib` and suffixed by `-static.dll`)
+- Updated: `rtc` now displays more information during compilation
+- Updated: `wrtc` now supports static linking of binary modules
+- Updated: static compiled executables can now load Lua 5.4 binary modules suffixed by `-static.dll`
+- Updated: arg[0] now contains the current executable fullpath for compiled scripts
+- Fixed: `sys.File()` won't crash anymore for embedded files now
+
+## rtc v1.9.5 (March 22 2025)
+- Updated: `rtc` now supports submodules linking
+
+
+## rtc v1.9.0 (Jan 27 2025)
+- Updated: `rtc` generates executable with Lua 5.4.7 VM
+- Updated: DLL binary modules dependencies are now resolved transparently in the embedded content
+
+
+## rtc v1.8.0 (May 12 2024)
+
+### General
+- Updated rtc with LuaRT toolchain to v1.8.0
+
+### rtc
+
+
+## rtc v1.7.0 (Jan 5 2024)
+
+### General
+- Updated rtc with LuaRT toolchain to v1.7.0
+
+### rtc
+- New: `rtc` now accepts mutiple files (the first will be considered the main script)
+- Updated: `-l` option now search for modules in the current directory too
+- Fixed: Errors thrown by any compiled executables now mention source file and error line (Fixes #5)
+
 ## rtc v1.6.0 (Nov 26 2023)
 
 ### General
